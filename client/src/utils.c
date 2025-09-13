@@ -1,6 +1,6 @@
 #include "utils.h"
 
-
+// YA CREADO
 void* serializar_paquete(t_paquete* paquete, int bytes)
 {
 	void * magic = malloc(bytes);
@@ -29,10 +29,24 @@ int crear_conexion(char *ip, char* puerto)
 	getaddrinfo(ip, puerto, &hints, &server_info);
 
 	// Ahora vamos a crear el socket.
-	int socket_cliente = 0;
+	// int socket_cliente = 0;
 
 	// Ahora que tenemos el socket, vamos a conectarlo
+	int socket_cliente = socket(server_info->ai_family,
+                         server_info->ai_socktype,
+                         server_info->ai_protocol);
+	if (socket_cliente == -1) {
+		fprintf(stderr, "Error al crear el socket\n");
+		freeaddrinfo(server_info);
+		return -1;
+	}	
 
+	if(connect(socket_cliente, server_info->ai_addr, server_info->ai_addrlen) == -1) {
+		fprintf(stderr, "Error al conectar el socket\n");
+		close(socket_cliente);
+		freeaddrinfo(server_info);
+		return -1;
+	};
 
 	freeaddrinfo(server_info);
 
